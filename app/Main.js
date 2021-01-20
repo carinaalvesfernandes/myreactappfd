@@ -37,7 +37,12 @@ import NotFound from "./components/NotFound";
 function Main() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("complexappToken")),
-    flashMessages: [],
+    flashMessages: [
+      {
+        message: "",
+        color: ""
+      }
+    ],
     user: {
       token: localStorage.getItem("complexappToken"),
       username: localStorage.getItem("complexappUsername"),
@@ -48,28 +53,20 @@ function Main() {
     unreadChatCount: 0
   };
 
-  /* 
-    rentunerar startobjectet med de nya uppdateringarna så som att nu är LoggedIn true
-    state.flashMessages menas att vi rentunerar de nuvarade state, dvs oförändrad
-  */
-
   function ourReducer(draft, action) {
     switch (action.type) {
       case "login":
-        //return { loggedIn: true, flashMessages: state.flashMessages };
         draft.loggedIn = true;
         draft.user = action.data;
         return;
       case "logout":
-        //return { loggedIn: false, flashMessages: state.flashMessages };
         draft.loggedIn = false;
         return;
       case "flashMessage":
-        /*return {
-          loggedIn: state.loggedIn,
-          flashMessages: state.flashMessages.concat(action.value) // concat för att inte direct mutate flashMessages
-        };*/
-        draft.flashMessages.push(action.value); // men när vi använde immer/draft så vill vi ändra direkt på arrayen eftersom draft är en clon av state
+        draft.flashMessages.push({
+          message: action.value,
+          color: action.color ? action.color : "alert-success"
+        });
         return;
       case "openSearch":
         draft.isSearchOpen = true;
@@ -92,13 +89,10 @@ function Main() {
     }
   }
 
-  //const [state, dispatch] = useReducer(ourReducer, initialState);
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
-  // check if token has expored or not on the first render
   useEffect(() => {
     if (state.loggedIn) {
-      // Send axios Request here
       const ourRequest = Axios.CancelToken.source();
       async function fetchResults() {
         try {

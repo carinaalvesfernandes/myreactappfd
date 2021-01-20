@@ -55,7 +55,6 @@ function EditPost(props) {
         draft.isSaving = false;
         return;
       case "titleRules":
-        // ifall validation skulle vara mer complex är det bara att lägga till fler else if som generar en annat error message
         if (!action.value.trim()) {
           draft.title.hasError = true;
           draft.title.message = "You must provide a title.";
@@ -110,16 +109,13 @@ function EditPost(props) {
     fetchPost();
     return () => {
       ourRequest.cancel();
-      /* detta canclar våran request så vi slipper
-        rendering fel ifall användaren
-        skulle abrubt trycka på en ny länk eller likande */
     };
   }, []);
 
   useEffect(() => {
     if (state.sendCount) {
       dispatch({ type: "saveRequestStarted" });
-      const ourRequest = Axios.CancelToken.source(); // Tilldelas en canceltoken.
+      const ourRequest = Axios.CancelToken.source();
 
       async function fetchPost() {
         try {
@@ -134,7 +130,7 @@ function EditPost(props) {
               cancelToken: ourRequest.token
             }
           );
-          // canceltoken tilldelas till våran request
+
           dispatch({ type: "saveRequestFinished" });
           appDispatch({ type: "flashMessage", value: "Post was uppdated" });
         } catch (e) {
@@ -144,9 +140,6 @@ function EditPost(props) {
       fetchPost();
       return () => {
         ourRequest.cancel();
-        /* detta canclar våran request så vi slipper
-        rendering fel ifall användaren
-        skulle abrubt trycka på en ny länk eller likande */
       };
     }
   }, [state.sendCount]);

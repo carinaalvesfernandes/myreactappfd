@@ -6,6 +6,7 @@ import Axios from "axios";
 import StateContext from "../StateContext";
 import ProfilePosts from "./ProfilePosts";
 import ProfileFollowers from "./ProfileFollowers";
+import NotFound from "./NotFound";
 
 function Profile() {
   const { username } = useParams();
@@ -34,6 +35,7 @@ function Profile() {
           },
           { cancelToken: ourRequest.token }
         );
+
         setState(draft => {
           draft.profileData = response.data;
         });
@@ -47,7 +49,6 @@ function Profile() {
       ourRequest.cancel();
     };
   }, [username]);
-  // only do this function when this render for the firsttime
 
   useEffect(() => {
     if (state.startFollowingRequestCount) {
@@ -123,6 +124,10 @@ function Profile() {
     setState(draft => {
       draft.stopFollowingRequestCount++;
     });
+  }
+
+  if (!state.profileData) {
+    return <NotFound />;
   }
 
   return (

@@ -27,7 +27,7 @@ function CreatePost(props) {
         value: "Congrats, you successfuly created a post!"
       });
       //Redirect to new post url
-      props.history.push(`/post/${response.data}`); // Detta skickar oss tillvåran post
+      props.history.push(`/post/${response.data}`);
       console.log("New post created");
     } catch (e) {
       console.log("Error", e.response.data);
@@ -73,4 +73,3 @@ function CreatePost(props) {
 }
 
 export default withRouter(CreatePost);
-// fattade inget med withRouter  (Section 5: Lektion 33)

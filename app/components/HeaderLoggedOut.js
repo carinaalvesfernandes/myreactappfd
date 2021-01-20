@@ -1,26 +1,25 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useImmer } from "use-immer";
 import Axios from "axios";
 import DispatchContext from "../DispatchContext";
 
 function HeaderLoggedOut(props) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
+  const [state, setState] = useImmer({
+    invalidPassword: false,
+    invalidUsername: false
+  });
 
   const appDispatch = useContext(DispatchContext);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleLogin() {
     try {
       const response = await Axios.post("/login", {
         username,
         password
       });
       if (response.data) {
-        /*
-        localStorage.setItem("complexappToken", response.data.token);
-        localStorage.setItem("complexappUsername", response.data.username);
-        localStorage.setItem("complexappAvatar", response.data.avatar);
-        */
         appDispatch({ type: "login", data: response.data });
         appDispatch({
           type: "flashMessage",
@@ -30,11 +29,25 @@ function HeaderLoggedOut(props) {
         console.log("incorrect username/password");
         appDispatch({
           type: "flashMessage",
-          value: "Invalid username/password"
+          value: "Invalid username/password",
+          color: "alert-danger"
         });
       }
     } catch (e) {
       console.log("Error", e.response.data);
+    }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (password && username) {
+      handleLogin();
+    } else {
+      setState(draft => {
+        draft.invalidPassword = !password ? true : false;
+        draft.invalidUsername = !username ? true : false;
+      });
     }
   }
 
@@ -45,7 +58,10 @@ function HeaderLoggedOut(props) {
           <input
             onChange={e => setUsername(e.target.value)}
             name="username"
-            className="form-control form-control-sm input-dark"
+            className={
+              "form-control form-control-sm input-dark " +
+              (state.invalidUsername ? "is-invalid" : "")
+            }
             type="text"
             placeholder="Username"
             autoComplete="off"
@@ -55,7 +71,10 @@ function HeaderLoggedOut(props) {
           <input
             onChange={e => setPassword(e.target.value)}
             name="password"
-            className="form-control form-control-sm input-dark"
+            className={
+              "form-control form-control-sm input-dark " +
+              (state.invalidPassword ? "is-invalid" : "")
+            }
             type="password"
             placeholder="Password"
           />

@@ -18,12 +18,12 @@ function ViewSinglePost(props) {
   const { id } = useParams();
 
   useEffect(() => {
-    const ourRequest = Axios.CancelToken.source(); // Tilldelas en canceltoken.
+    const ourRequest = Axios.CancelToken.source();
 
     async function fetchPost() {
       try {
         const response = await Axios.get(`/post/${id}`, {
-          cancelToken: ourRequest.token // canceltoken tilldelas till våran request
+          cancelToken: ourRequest.token
         });
         setPost(response.data);
         setIsLoading(false);
@@ -34,9 +34,6 @@ function ViewSinglePost(props) {
     fetchPost();
     return () => {
       ourRequest.cancel();
-      /* detta canclar våran request så vi slipper
-        rendering fel ifall användaren
-        skulle abrubt trycka på en ny länk eller likande */
     };
   }, [id]);
 

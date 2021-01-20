@@ -135,7 +135,6 @@ function HomeGuest() {
 
   useEffect(() => {
     if (state.username.checkCount) {
-      // Send axios Request here
       const ourRequest = Axios.CancelToken.source();
       async function fetchResults() {
         try {
@@ -166,7 +165,6 @@ function HomeGuest() {
 
   useEffect(() => {
     if (state.email.checkCount) {
-      // Send axios Request here
       const ourRequest = Axios.CancelToken.source();
       async function fetchResults() {
         try {
@@ -197,7 +195,6 @@ function HomeGuest() {
 
   useEffect(() => {
     if (state.submitCount) {
-      // Send axios Request here
       const ourRequest = Axios.CancelToken.source();
       async function fetchResults() {
         try {
